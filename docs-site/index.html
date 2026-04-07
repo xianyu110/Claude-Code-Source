@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code 源码揭秘 - 51万行代码里的7个隐藏功能</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <!-- Scanline overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="pixel-bracket">[</span>
+        <span class="logo-text">CLAUDE.CODE</span>
+        <span class="pixel-bracket">]</span>
+        <span class="logo-sub">源码揭秘</span>
+      </div>
+      <nav class="nav">
+        <a href="#stats">数据</a>
+        <a href="#features">隐藏功能</a>
+        <a href="#architecture">架构</a>
+        <a href="#gates">门控</a>
+        <a href="#run">运行</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-particles" id="particles"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="blink">_</span> REVERSED FROM SOURCE MAPS
+      </div>
+      <h1 class="hero-title">
+        <span class="line1">51 万行源码</span>
+        <span class="line2">里的</span>
+        <span class="line3 highlight">7 个隐藏功能</span>
+      </h1>
+      <p class="hero-desc">
+        从 npm 包的 source map 中逆向还原了 Claude Code 的完整 TypeScript 源码。<br>
+        结果发现：我们平时用的，只是冰山一角。
+      </p>
+      <div class="promo-card">
+        <div class="promo-label">推荐中转 API</div>
+        <p class="promo-text">
+          一站式接入各种顶级 AI 服务（GPT-4/Claude 3.5），注册即送 0.2 刀。<br>
+          10 万+ 客户信赖，18 个月稳定运营！
+        </p>
+        <a href="https://apipro.maynor1024.live" class="btn btn-secondary" target="_blank" rel="noreferrer">
+          <span class="btn-icon">#</span> 立即访问
+        </a>
+      </div>
+      <div class="hero-actions">
+        <a href="#features" class="btn btn-primary">
+          <span class="btn-icon">></span> 开始探索
+        </a>
+        <a href="#architecture" class="btn btn-secondary">
+          <span class="btn-icon">#</span> 查看架构
+        </a>
+      </div>
+    </div>
+    <div class="hero-terminal">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">claude-code-source</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">wc -l src/**/*.ts src/**/*.tsx</span></div>
+        <div class="terminal-line output">513681 total</div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">find src -name "*.ts" | wc -l</span></div>
+        <div class="terminal-line output">1987</div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">grep -r "feature(" src | wc -l</span></div>
+        <div class="terminal-line output">960</div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd typing">grep -r "USER_TYPE" src | wc -l</span><span class="cursor blink">_</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section id="stats" class="section stats-section">
+    <div class="section-header">
+      <span class="section-tag">// PROJECT_STATS</span>
+      <h2 class="section-title">项目数据一览</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card" data-count="513681">
+        <div class="stat-number">0</div>
+        <div class="stat-label">代码行数</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="stat-card" data-count="1987">
+        <div class="stat-number">0</div>
+        <div class="stat-label">源文件数</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:72%"></div></div>
+      </div>
+      <div class="stat-card" data-count="53">
+        <div class="stat-number">0</div>
+        <div class="stat-label">内置工具</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:45%"></div></div>
+      </div>
+      <div class="stat-card" data-count="87">
+        <div class="stat-number">0</div>
+        <div class="stat-label">斜杠命令</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:55%"></div></div>
+      </div>
+      <div class="stat-card" data-count="148">
+        <div class="stat-number">0</div>
+        <div class="stat-label">UI 组件</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:62%"></div></div>
+      </div>
+      <div class="stat-card" data-count="50">
+        <div class="stat-number">0</div>
+        <div class="stat-label">编译开关</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:40%"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="section features-section">
+    <div class="section-header">
+      <span class="section-tag">// HIDDEN_FEATURES</span>
+      <h2 class="section-title">7 大隐藏功能</h2>
+      <p class="section-desc">通过 feature flag 和 USER_TYPE 门控，普通用户根本看不到</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Feature 1: BUDDY -->
+      <div class="feature-card" data-feature="buddy">
+        <div class="feature-header">
+          <span class="feature-index">#01</span>
+          <span class="feature-flag">feature('BUDDY')</span>
+        </div>
+        <h3 class="feature-title">BUDDY - AI 电子宠物</h3>
+        <p class="feature-desc">终端里的拓麻歌子！写代码时有一只小宠物陪你。</p>
+        <div class="feature-sprites">
+          <pre class="ascii-art">
+   ╭──────────╮
+   │  · ω ·   │
+   │  ╰──╯    │
+   ╰──┬──┬──╯
+      │  │
+     ╱    ╲</pre>
+        </div>
+        <div class="feature-details">
+          <div class="detail-row">
+            <span class="detail-label">物种</span>
+            <span class="detail-value">18 种（鸭/猫/龙/章鱼/机器人...）</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">稀有度</span>
+            <span class="detail-value">5 级（普通60% → 传说1%）</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">闪光</span>
+            <span class="detail-value">1% 概率，独立于稀有度</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">防作弊</span>
+            <span class="detail-value">FNV-1a + Mulberry32 确定性生成</span>
+          </div>
+        </div>
+        <div class="feature-code">
+          <code>// 你的宠物由 UUID 决定，改配置也没用</code>
+          <code>hash(userId + 'friend-2026-401')</code>
+        </div>
+      </div>
+
+      <!-- Feature 2: KAIROS -->
+      <div class="feature-card" data-feature="kairos">
+        <div class="feature-header">
+          <span class="feature-index">#02</span>
+          <span class="feature-flag">feature('KAIROS')</span>
+        </div>
+        <h3 class="feature-title">KAIROS - 永不关机的 Claude</h3>
+        <p class="feature-desc">关掉终端 Claude 还在运行，还会自己"做梦"整理记忆。</p>
+        <div class="feature-flow">
+          <div class="flow-step">Orient<br><small>定位</small></div>
+          <div class="flow-arrow">-></div>
+          <div class="flow-step">Gather<br><small>收集</small></div>
+          <div class="flow-arrow">-></div>
+          <div class="flow-step">Consolidate<br><small>整合</small></div>
+          <div class="flow-arrow">-></div>
+          <div class="flow-step">Prune<br><small>修剪</small></div>
+        </div>
+        <div class="feature-details">
+          <div class="detail-row">
+            <span class="detail-label">持久化</span>
+            <span class="detail-value">跨会话后台运行</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">自动做梦</span>
+            <span class="detail-value">24h+ 5会话 自动触发</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">主动模式</span>
+            <span class="detail-value">没人说话时自己找活干</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">激活检查</span>
+            <span class="detail-value">5 层门控</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: ULTRAPLAN -->
+      <div class="feature-card" data-feature="ultraplan">
+        <div class="feature-header">
+          <span class="feature-index">#03</span>
+          <span class="feature-flag">feature('ULTRAPLAN')</span>
+        </div>
+        <h3 class="feature-title">ULTRAPLAN - 云端深度规划</h3>
+        <p class="feature-desc">把难题甩给云端 Opus 独立研究最长 30 分钟。</p>
+        <div class="feature-flow vertical">
+          <div class="flow-step">/ultraplan &lt;问题&gt;</div>
+          <div class="flow-arrow-down">|</div>
+          <div class="flow-step">创建远程 CCR 会话</div>
+          <div class="flow-arrow-down">|</div>
+          <div class="flow-step highlight-step">Opus 独立研究 (30min)</div>
+          <div class="flow-arrow-down">|</div>
+          <div class="flow-step">浏览器查看/修改方案</div>
+        </div>
+        <div class="feature-code danger">
+          <code>// 外部版永远不可用</code>
+          <code>isEnabled: () => "external" === 'ant' // false</code>
+        </div>
+      </div>
+
+      <!-- Feature 4: COORDINATOR -->
+      <div class="feature-card" data-feature="coordinator">
+        <div class="feature-header">
+          <span class="feature-index">#04</span>
+          <span class="feature-flag">feature('COORDINATOR_MODE')</span>
+        </div>
+        <h3 class="feature-title">Coordinator - 多 Agent 编排</h3>
+        <p class="feature-desc">主 Claude 变成纯指挥官，Worker 并行执行任务。</p>
+        <div class="role-split">
+          <div class="role coordinator-role">
+            <div class="role-title">COORDINATOR</div>
+            <div class="role-tools">Agent | SendMessage | Stop</div>
+            <div class="role-desc">拆任务、整合结果<br>自己不写代码</div>
+          </div>
+          <div class="role-connector">
+            <div class="connector-line"></div>
+            <div class="connector-arrows">
+              <span>v</span>
+              <span>^</span>
+            </div>
+          </div>
+          <div class="role worker-role">
+            <div class="role-title">WORKER x N</div>
+            <div class="role-tools">53 tools (full)</div>
+            <div class="role-desc">独立子进程<br>完全自包含 prompt</div>
+          </div>
+        </div>
+        <div class="feature-warning">
+          <span class="warning-icon">!</span> 核心铁律：禁止甩锅式委派
+        </div>
+      </div>
+
+      <!-- Feature 5: Hidden Commands -->
+      <div class="feature-card" data-feature="commands">
+        <div class="feature-header">
+          <span class="feature-index">#05</span>
+          <span class="feature-flag">26+ commands</span>
+        </div>
+        <h3 class="feature-title">隐藏命令 & 秘密开关</h3>
+        <p class="feature-desc">大量未公开的斜杠命令、CLI 参数和环境变量。</p>
+        <div class="commands-table">
+          <div class="cmd-row header">
+            <span>命令</span><span>功能</span><span>开关</span>
+          </div>
+          <div class="cmd-row"><span>/buddy</span><span>宠物系统</span><span>BUDDY</span></div>
+          <div class="cmd-row"><span>/proactive</span><span>主动模式</span><span>PROACTIVE</span></div>
+          <div class="cmd-row"><span>/voice</span><span>语音交互</span><span>VOICE_MODE</span></div>
+          <div class="cmd-row"><span>/ultraplan</span><span>云端规划</span><span>ULTRAPLAN</span></div>
+          <div class="cmd-row"><span>/bridge</span><span>远程控制</span><span>BRIDGE_MODE</span></div>
+          <div class="cmd-row"><span>/fork</span><span>子代理分叉</span><span>FORK_SUBAGENT</span></div>
+          <div class="cmd-row ant-only"><span>/teleport</span><span>传送会话</span><span>ant only</span></div>
+          <div class="cmd-row ant-only"><span>/bughunter</span><span>Bug 猎人</span><span>ant only</span></div>
+          <div class="cmd-row ant-only"><span>/autofix-pr</span><span>自动修复 PR</span><span>ant only</span></div>
+        </div>
+      </div>
+
+      <!-- Feature 6: Bridge -->
+      <div class="feature-card" data-feature="bridge">
+        <div class="feature-header">
+          <span class="feature-index">#06</span>
+          <span class="feature-flag">feature('BRIDGE_MODE')</span>
+        </div>
+        <h3 class="feature-title">Bridge - 远程遥控终端</h3>
+        <p class="feature-desc">从 claude.ai 或手机直接操控本地 CLI。</p>
+        <div class="bridge-diagram">
+          <div class="bridge-endpoint">
+            <div class="endpoint-icon">~</div>
+            <div class="endpoint-label">手机 / 浏览器</div>
+          </div>
+          <div class="bridge-connection">
+            <div class="conn-line"></div>
+            <div class="conn-label">WebSocket</div>
+            <div class="conn-label">OAuth + JWT</div>
+          </div>
+          <div class="bridge-endpoint">
+            <div class="endpoint-icon">></div>
+            <div class="endpoint-label">本地终端</div>
+          </div>
+        </div>
+        <div class="feature-details">
+          <div class="detail-row">
+            <span class="detail-label">协议</span>
+            <span class="detail-value">WebSocket 实时双向</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">认证</span>
+            <span class="detail-value">OAuth + Worker JWT + 设备信任</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">文件</span>
+            <span class="detail-value">33 个文件</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 7: Feature Gates -->
+      <div class="feature-card" data-feature="gates">
+        <div class="feature-header">
+          <span class="feature-index">#07</span>
+          <span class="feature-flag">960 calls</span>
+        </div>
+        <h3 class="feature-title">三层门控架构</h3>
+        <p class="feature-desc">编译时 + 用户类型 + 远程 A/B 测试，精确控制功能可见性。</p>
+        <div class="gates-visual">
+          <div class="gate gate-1">
+            <div class="gate-label">L1: 编译时</div>
+            <div class="gate-desc">feature() 开关<br>50 个 flag<br>Dead Code Elimination</div>
+          </div>
+          <div class="gate-connector">-></div>
+          <div class="gate gate-2">
+            <div class="gate-label">L2: 运行时</div>
+            <div class="gate-desc">USER_TYPE 检查<br>372 处检查点<br>'ant' vs 'external'</div>
+          </div>
+          <div class="gate-connector">-></div>
+          <div class="gate gate-3">
+            <div class="gate-label">L3: 远程</div>
+            <div class="gate-desc">GrowthBook A/B<br>tengu_ 开关<br>20min / 6h 刷新</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section id="architecture" class="section arch-section">
+    <div class="section-header">
+      <span class="section-tag">// ARCHITECTURE</span>
+      <h2 class="section-title">技术架构</h2>
+    </div>
+    <div class="arch-diagram">
+      <div class="arch-layer layer-ui">
+        <div class="layer-title">UI 层</div>
+        <div class="layer-items">React + Ink | 148 组件 | 终端渲染</div>
+      </div>
+      <div class="arch-connector">|||</div>
+      <div class="arch-layer layer-core">
+        <div class="layer-title">核心层</div>
+        <div class="layer-items">QueryEngine | 工具调度 | 上下文管理 | 87 命令</div>
+      </div>
+      <div class="arch-connector">|||</div>
+      <div class="arch-layer layer-tools">
+        <div class="layer-title">工具层</div>
+        <div class="layer-items">53 tools | Agent | Bash | Read | Edit | Search</div>
+      </div>
+      <div class="arch-connector">|||</div>
+      <div class="arch-layer layer-services">
+        <div class="layer-title">服务层</div>
+        <div class="layer-items">API | MCP 协议 | Analytics | AutoDream | Bridge</div>
+      </div>
+      <div class="arch-connector">|||</div>
+      <div class="arch-layer layer-hidden">
+        <div class="layer-title">隐藏系统 (feature flag 门控)</div>
+        <div class="layer-items">Buddy | Kairos | Ultraplan | Coordinator | Voice</div>
+      </div>
+    </div>
+    <div class="tech-stack">
+      <h3>技术栈</h3>
+      <div class="tech-tags">
+        <span class="tech-tag">TypeScript</span>
+        <span class="tech-tag">Bun</span>
+        <span class="tech-tag">React</span>
+        <span class="tech-tag">Ink</span>
+        <span class="tech-tag">Zod</span>
+        <span class="tech-tag">MCP SDK</span>
+        <span class="tech-tag">OpenTelemetry</span>
+        <span class="tech-tag">GrowthBook</span>
+        <span class="tech-tag">WebSocket</span>
+        <span class="tech-tag">OAuth 2.0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- GrowthBook -->
+  <section id="gates" class="section gates-section">
+    <div class="section-header">
+      <span class="section-tag">// GROWTHBOOK_SWITCHES</span>
+      <h2 class="section-title">远程开关一览</h2>
+      <p class="section-desc">tengu_ 前缀的 GrowthBook 开关，可远程动态控制</p>
+    </div>
+    <div class="switches-grid">
+      <div class="switch-card">
+        <span class="switch-name">tengu_kairos</span>
+        <span class="switch-desc">KAIROS 助手模式总开关</span>
+      </div>
+      <div class="switch-card">
+        <span class="switch-name">tengu_ultraplan_model</span>
+        <span class="switch-desc">Ultraplan 使用的模型</span>
+      </div>
+      <div class="switch-card">
+        <span class="switch-name">tengu_ccr_bridge</span>
+        <span class="switch-desc">Bridge 远程控制总开关</span>
+      </div>
+      <div class="switch-card">
+        <span class="switch-name">tengu_session_memory</span>
+        <span class="switch-desc">会话记忆功能</span>
+      </div>
+      <div class="switch-card">
+        <span class="switch-name">tengu_max_version_config</span>
+        <span class="switch-desc">自动更新 Kill Switch</span>
+      </div>
+      <div class="switch-card">
+        <span class="switch-name">tengu_ant_model_override</span>
+        <span class="switch-desc">内部用户模型覆盖</span>
+      </div>
+      <div class="switch-card">
+        <span class="switch-name">tengu_cobalt_frost</span>
+        <span class="switch-desc">语音识别开关</span>
+      </div>
+      <div class="switch-card">
+        <span class="switch-name">tengu_bridge_repl_v2</span>
+        <span class="switch-desc">Bridge v2 传输协议</span>
+      </div>
+    </div>
+    <div class="user-type-compare">
+      <div class="type-card ant">
+        <div class="type-header">ANT (内部)</div>
+        <div class="type-info">
+          <div>配置刷新: <strong>20 分钟</strong></div>
+          <div>专属命令: <strong>24+ 个</strong></div>
+          <div>功能可见: <strong>100%</strong></div>
+          <div>USER_TYPE 检查: <strong>通过</strong></div>
+        </div>
+      </div>
+      <div class="type-vs">VS</div>
+      <div class="type-card external">
+        <div class="type-header">EXTERNAL (外部)</div>
+        <div class="type-info">
+          <div>配置刷新: <strong>6 小时</strong></div>
+          <div>专属命令: <strong>0 个</strong></div>
+          <div>功能可见: <strong>~30%</strong></div>
+          <div>USER_TYPE 检查: <strong>拒绝</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Run -->
+  <section id="run" class="section run-section">
+    <div class="section-header">
+      <span class="section-tag">// GET_STARTED</span>
+      <h2 class="section-title">本地运行</h2>
+    </div>
+    <div class="run-terminal">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">bash</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">git clone &lt;repo-url&gt; claude-code-source</span></div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">cd claude-code-source</span></div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">bun install</span></div>
+        <div class="terminal-line output">installed 87 packages</div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">bun run dev</span></div>
+        <div class="terminal-line output">claude-code v999.0.0-restored</div>
+        <div class="terminal-line output">ready.</div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">bun run version</span></div>
+        <div class="terminal-line output">999.0.0-restored</div>
+      </div>
+    </div>
+    <div class="requirements">
+      <h3>环境要求</h3>
+      <div class="req-grid">
+        <div class="req-item">
+          <span class="req-icon">B</span>
+          <span class="req-text">Bun >= 1.3.5</span>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">N</span>
+          <span class="req-text">Node.js >= 24</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Evolution -->
+  <section class="section evolution-section">
+    <div class="section-header">
+      <span class="section-tag">// EVOLUTION</span>
+      <h2 class="section-title">AI 编程助手的进化方向</h2>
+    </div>
+    <div class="evolution-grid">
+      <div class="evo-card">
+        <div class="evo-arrow">-></div>
+        <div class="evo-from">单 Agent</div>
+        <div class="evo-to">多 Agent 协作</div>
+        <div class="evo-ref">Coordinator</div>
+      </div>
+      <div class="evo-card">
+        <div class="evo-arrow">-></div>
+        <div class="evo-from">被动响应</div>
+        <div class="evo-to">主动执行</div>
+        <div class="evo-ref">Proactive</div>
+      </div>
+      <div class="evo-card">
+        <div class="evo-arrow">-></div>
+        <div class="evo-from">短期会话</div>
+        <div class="evo-to">持久化记忆</div>
+        <div class="evo-ref">Kairos + Dream</div>
+      </div>
+      <div class="evo-card">
+        <div class="evo-arrow">-></div>
+        <div class="evo-from">本地 CLI</div>
+        <div class="evo-to">云端协同</div>
+        <div class="evo-ref">Ultraplan + Bridge</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-text">
+        <span class="footer-logo">[CLAUDE.CODE] 源码揭秘</span>
+        <p>基于公开 npm 包 source map 还原分析，仅供技术学习交流</p>
+        <p>源码版权归原作者 <a href="https://anthropic.com" target="_blank">Anthropic</a> 所有</p>
+      </div>
+      <div class="footer-meta">
+        <span>51.4万行代码</span>
+        <span>|</span>
+        <span>1987 个文件</span>
+        <span>|</span>
+        <span>7 个隐藏功能</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/main.js"></script>
+</body>
+</html>
