@@ -45,10 +45,12 @@ function spawnParticles() {
     const node = document.createElement('span')
     node.className = 'pixel-particle'
     node.style.left = `${Math.random() * 100}%`
-    node.style.top = `${30 + Math.random() * 70}%`
-    node.style.animationDuration = `${4 + Math.random() * 5}s`
-    node.style.animationDelay = `${Math.random() * 5}s`
+    node.style.top = `${20 + Math.random() * 80}%`
+    node.style.animationDuration = `${3 + Math.random() * 4}s`
+    node.style.animationDelay = `${Math.random() * 3}s`
     node.style.background = colors[i % colors.length]
+    node.style.width = `${3 + Math.floor(Math.random() * 3)}px`
+    node.style.height = node.style.width
     particleRoot.appendChild(node)
   }
 }
